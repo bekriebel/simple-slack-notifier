@@ -9,11 +9,12 @@ OPTIONS:
    -w <url>         Slack Webhook URL (required)
    -m <message>     Message to send to slack (cannot be used with -f)
    -f <filename>    File containing message to send to slack (cannot be used with -m)
+   -a               Treat message or message file as attachment
 Webhook URL and either message OR filename required.
 EOF
 }
 
-while getopts "w:m:f:" opt
+while getopts "w:m:f:a" opt
 do
   case $opt in
     w)
@@ -24,6 +25,9 @@ do
       ;;
     f)
       SLACK_MESSAGE_FILE="$OPTARG"
+      ;;
+    a)
+      SLACK_ATTACHMENT=true
       ;;
     ?)
       usage
@@ -59,5 +63,15 @@ if [ "$SLACK_MESSAGE_FILE" != "" ]; then
   fi
 fi
 
+if [ $SLACK_ATTACHMENT ]; then
+  PAYLOAD="\"attachments\": [
+      {
+        $SLACK_MESSAGE
+      }
+    ]"
+else
+  PAYLOAD="\"text\":\"$SLACK_MESSAGE\""
+fi
+
 echo "Sending message to Slack: $SLACK_MESSAGE"
-curl -s -X POST --data-urlencode "payload={\"text\":\"$SLACK_MESSAGE\"}" "$SLACK_WEBHOOK_URL"
+curl -s -X POST --data-urlencode "payload={$PAYLOAD}" "$SLACK_WEBHOOK_URL"

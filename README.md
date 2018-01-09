@@ -23,11 +23,23 @@ The contents of a file can be used for the slack message.
      -f /tmp/uptime-volume-mount
    ```
 
+### Attachment
+The message or message file can be formatted as a [Slack Message Attachment](https://api.slack.com/docs/message-attachments).
+   ```
+   docker run \
+     --rm \
+     simple-slack-notifier \
+     -w [your_webhook_url] \
+     -m '"color":"good","title":"Simple Slack Notifier","title_link":"https://github.com/bekriebel/simple-slack-notifier"' \
+     -a
+   ```
+
 ### Environment Variables
 Webhook URL, Message, and Message File can also be passed as environment variables.
- - SLACK_WEBHOOK_URL
- - SLACK_MESSAGE
- - SLACK_MESSAGE_FILE
+- SLACK_WEBHOOK_URL
+- SLACK_MESSAGE
+- SLACK_MESSAGE_FILE
+- SLACK_ATTACHMENT (true/false)
 
    ```
     docker run \
